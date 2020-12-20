@@ -11,11 +11,11 @@ Some useful information regarding the module:
   the tree.
 
 - The module has been designed to be easily extensible with new structures so that you can check and compare your
-  own lock and tree structures, check the comments in the source code for instructions on how to add your own structures. 
-  The locks used are the spinlock, mutex, read-write lock, and read-write semaphore, which are provided by the kernel, 
-  while the trees used are the red-black tree kernel implementation, and a concurrent balanced binary search tree, 
-  which uses RCU (called cb_tree in the code) to provide lock free lookups, and therefore is very good for read-mostly use cases. 
-  The cb_tree is a structure created by Clements, Kaashoek, and Zeldovich 
+  own lock and tree structures, check the comments in the source code for instructions on how to add your own 
+  structures. The locks used are the spinlock, mutex, read-write lock, and read-write semaphore, which are provided 
+  by the kernel, while the trees used are the red-black tree kernel implementation, and a concurrent balanced 
+  binary search tree, which uses RCU (called cb_tree in the code) to provide lock free lookups, and therefore 
+  is very good for read-mostly use cases. The cb_tree is a structure created by Clements, Kaashoek, and Zeldovich 
   for their paper "Scalable Address Spaces Using RCU Balanced Trees" (https://dl.acm.org/doi/10.1145/2150976.2150998), 
   which I modified a bit to fit the kernel module use case.
 
