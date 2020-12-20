@@ -1,0 +1,36 @@
+This is a simple Linux kernel module I made as a project for a postgrad CS course.
+
+Some useful information regarding the module: 
+
+- There are two stages to the module's operation, the insert stage, and the erase/search stage. On the insert stage,
+  a configurable amount of kernel threads insert dummy strings to the shared tree structure,
+  using a configurable shared lock and linear offsets as keys. On the erase/search stage,
+  each thread chooses a random offset and an operation, either erase or search. The operation
+  is chosen while adhering to a delete ratio parameter (that is with a delete ratio of 20% each thread
+  performs 20% erases and 80% lookups, roughly), then performs the chosen operation at the chosen offset on
+  the tree.
+
+- The module has been designed to be easily extensible with new structures so that you can check and compare your
+  own lock and tree structures, check the comments in the source code for instructions on how to add your own structures. 
+  The locks used are the spinlock, mutex, read-write lock, and read-write semaphore, which are provided by the kernel, 
+  while the trees used are the red-black tree kernel implementation, and a concurrent balanced binary search tree, 
+  which uses RCU (called cb_tree in the code) to provide lock free lookups, and therefore is very good for read-mostly use cases. 
+  The cb_tree is a structure created by Clements, Kaashoek, and Zeldovich 
+  for their paper "Scalable Address Spaces Using RCU Balanced Trees" (https://dl.acm.org/doi/10.1145/2150976.2150998), 
+  which I modified a bit to fit the kernel module use case.
+
+- The RESULTS file contains results from some benchmarks I ran
+
+- Build using 'make', run the module with insmod, remove with rmmod before running again
+
+- Use modinfo on the produced .ko file to check details on the module parameters
+
+- I built and ran the module on a 4.4.44, 4.14.72, and a 5.9.10 kernel without a problem, so it should
+  be good on most newer kernels.
+
+- WATCH OUT for possible deadlocks. The module is configured to distribute the threads to the online
+  CPUs in a round-robin way. I tested 32 threads on a 4 core system and everything ran ok, but beware
+  possible edge cases where oversubscribing may lead to deadlocks. I have not found any such case as
+  of writing this.
+
+- The TODO file contains some possible improvements/additions which I may work on in the future.

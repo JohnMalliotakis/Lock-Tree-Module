@@ -1,0 +1,13 @@
+- Refine barrier mechanism, perhaps with a combining tree technique
+
+- Add possible NUMA alignment parameter to assess the impact of
+  remote versus local accesses to data structures. The parameter
+  can be a simple boolean. If set to true, all memory allocations
+  for the insert stage will be performed to node local memory by each
+  thread, thus since the kthreads are bound to CPUs round-robin the
+  tree nodes will be distributed among the NUMA nodes evenly. Then,
+  on the erase/lookup stage, with the NUMA-aware parameter set,
+  each kthread will randomly choose offsets only within the range of
+  the NUMA node to which its CPU belongs, thus operations will remain
+  in local memory, else completely random offsets will be used as in 
+  the current implementation.
